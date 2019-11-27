@@ -47,3 +47,17 @@ function addLighting()
     let ambientLight = new THREE.AmbientLight(0x505050)
     scene.add(ambientLight)
 }
+
+/**
+ * Called once-per-frame.
+ * @return {void} n/a
+ */
+function update()
+{
+
+    //Actually draw stuff to the screen
+    renderer.render(scene, camera);
+
+    //Call update continously
+    requestAnimationFrame(update);
+}
