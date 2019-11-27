@@ -5,7 +5,7 @@ window.addEventListener("load", initScene);
 var scene = new THREE.Scene();
 
 //Create a perspective camera
-var camera = new THREE.PerspectiveCamera(75, window.innerWidth/ window.innerHeight, 0.1, 1000);
+var camera = new THREE.PerspectiveCamera(45, window.innerWidth/ window.innerHeight, 0.1, 1000);
 
 //Create a renderer (with antialiasing)
 var renderer = new THREE.WebGLRenderer({ antialias: true });
@@ -27,9 +27,16 @@ function initScene()
     //Create a mesh from this geometry and material
     var cube = new THREE.Mesh(geometry, material);
 
+    var cube2 = new THREE.Mesh(geometry, material);
+    
+
     //Add the cube to the scene
     scene.add( cube );
 
+    cube2.rotation.x = Math.PI / 3;
+    cube2.position.x = 1;
+
+    scene.add( cube2 );
     //Position the camera behind the cube and call update initially
     camera.position.z = 5;
     //initialise lighting
