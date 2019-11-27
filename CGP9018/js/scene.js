@@ -46,6 +46,7 @@ function initScene()
 
     //Position the camera behind the cube and call update initially
     camera.position.z = 5;
+    
     //initialise lighting
     addLighting();
 
@@ -71,6 +72,7 @@ function update()
     //Actually draw stuff to the screen
     renderer.render(scene, camera);
     rotateCube();
+    moveCamera();
     //Call update continously
     requestAnimationFrame(update);
 }
@@ -79,4 +81,10 @@ function rotateCube(){
     cube.rotation.x -= SPEED * 2;
     cube.rotation.y -= SPEED;
     cube.rotation.z -= SPEED * 3;
+}
+
+function moveCamera(){
+    
+    var d = new Date();
+    camera.position.x += Math.sin(d.getTime()+1/1000)/20;
 }
