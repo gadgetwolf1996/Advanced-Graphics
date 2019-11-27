@@ -9,3 +9,41 @@ var camera = new THREE.PerspectiveCamera(75, window.innerWidth/ window.innerHeig
 
 //Create a renderer (with antialiasing)
 var renderer = new THREE.WebGLRenderer({ antialias: true });
+
+/**
+ * Initialises the scene
+ * @return {void} n/a
+ */
+function initScene()
+{
+    //Set the renderer size to the dimensions of the window
+    renderer.setSize(window.innerWidth, window.innerHeight);
+    //Add the canvas to the page
+    document.body.appendChild(renderer.domElement);
+    //Create a (1x1x1) cube geometry
+    var geometry = new THREE.BoxGeometry(1,1,1);
+    //Create a solid-colour material
+    var material = new THREE.MeshLambertMaterial({ color: 0x00ff00 });
+    //Create a mesh from this geometry and material
+    var cube = new THREE.Mesh(geometry, material);
+
+    //Add the cube to the scene
+    scene.add( cube );
+
+    //Position the camera behind the cube and call update initially
+    camera.position.z = 5;
+    //initialise lighting
+    addLighting();
+
+    update();
+}
+
+function addLighting()
+{
+    let pointLight = new THREE.PointLight(0xdddddd)
+    pointLight.position.set(-5,-3, 3)
+    scene.add(pointLight)
+
+    let ambientLight = new THREE.AmbientLight(0x505050)
+    scene.add(ambientLight)
+}
