@@ -15,12 +15,15 @@ var SPEED = 0.01;
 var cube;
 var lasttime = clock.getDelta();
 var timeelapsed = 0.0;
+
 /**
  * Initialises the scene
  * @return {void} n/a
  */
 function initScene()
 {
+
+
     //Set the renderer size to the dimensions of the window
     renderer.setSize(window.innerWidth, window.innerHeight);
     //Add the canvas to the page
