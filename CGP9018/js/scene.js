@@ -16,13 +16,14 @@ var cube;
 var lasttime = clock.getDelta();
 var timeelapsed = 0.0;
 
+
 /**
  * Initialises the scene
  * @return {void} n/a
  */
 function initScene()
 {
-
+    addLighting();   
 
     //Set the renderer size to the dimensions of the window
     renderer.setSize(window.innerWidth, window.innerHeight);
@@ -33,8 +34,15 @@ function initScene()
 
     //Create a (1x1x1) cube geometry
     var geometry = new THREE.BoxGeometry(1,1,1);
+
+    var shaders = ShaderLoader.getShaders("shaders/simple.vert", "shaders/simple.frag");console.log("Shaders loaded...");
+
     //Create a solid-colour material
-    var material = new THREE.MeshLambertMaterial({ color: 0x00ff00 });
+    var material = new THREE.ShaderMaterial({
+        uniforms: {},
+        vertexShader: shaders.vertex,
+        fragmentShader: shaders.fragment
+    });//new THREE.MeshLambertMaterial({ color: 0x00ff00 });
     //Create a mesh from this geometry and material
     cube = new THREE.Mesh(geometry, material);
 
@@ -58,7 +66,7 @@ function initScene()
 
     controls = new THREE.OrbitControls(camera, renderer.domElement);
     //initialise lighting
-    addLighting();
+ 
 
     update();
 }
