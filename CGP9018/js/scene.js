@@ -16,6 +16,8 @@ var cube;
 var lasttime = clock.getDelta();
 var timeelapsed = 0.0;
 var sceneObjects = new Array(500);
+var objLoader = new THREE.OBJLoader();
+var shaders = ShaderLoader.getShaders("shaders/simple.vert", "shaders/simple.frag");console.log("Shaders loaded...");
 
 /**
  * Initialises the scene
@@ -31,20 +33,30 @@ function initScene()
     document.body.appendChild(renderer.domElement);
     
     
+    objLoader.load('Models/Bullet.obj', function(loadedObj){
+        loadedObj.transverse(function(child){
+            if(child instanceof THREE.Mesh)
+                child.material = material;
+        });
+        obj = loadedObj;
+        //scene.add(loadedObj);
+    });
+
+    var material = new THREE.ShaderMaterial({
+        uniforms: {},
+        vertexShader: shaders.vertex,
+        fragmentShader: shaders.fragment
+    });
 
     //Create a (1x1x1) cube geometry
     for(var x = 0; x < sceneObjects.length; x++){
         var geometry = new THREE.BoxGeometry(1,1,1);
 
-        var shaders = ShaderLoader.getShaders("shaders/simple.vert", "shaders/simple.frag");console.log("Shaders loaded...");
-
         //Create a solid-colour material
-        var material = new THREE.ShaderMaterial({
-            uniforms: {},
-            vertexShader: shaders.vertex,
-            fragmentShader: shaders.fragment
-        });//new THREE.MeshLambertMaterial({ color: 0x00ff00 });
+        //new THREE.MeshLambertMaterial({ color: 0x00ff00 });
         //Create a mesh from this geometry and material
+
+        
         cube = new THREE.Mesh(geometry, material);
         sceneObjects[x] = cube;
         sceneObjects[x].position.x= (Math.random()*20)-10;
@@ -102,7 +114,7 @@ function rotateCube(){
     var no = 0;
     for(var x = 0; x < sceneObjects.length; x++)
     {
-        ran = (Math.random()* SPEED)*3;
+        ran = (SPEED)*3;
         no = randWholeNum(3);
         console.log(no);
         switch(no){
