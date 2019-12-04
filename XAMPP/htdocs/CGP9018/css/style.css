@@ -1,0 +1,14 @@
+/**css file*/
+html,body
+{
+    margin:0;
+    padding:0;
+    overflow:hidden;
+}
+
+/**size of canvas applied to scene: 100% w and h of screen*/
+canvas
+{
+    width:100vw;
+    height:100vw;
+}
