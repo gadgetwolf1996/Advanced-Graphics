@@ -12,17 +12,28 @@ var clock = new THREE.Clock;
 var renderer = new THREE.WebGLRenderer({ antialias: true });
 var controls;
 var SPEED = 0.01;
-var cube;
+var obj;
 var lasttime = clock.getDelta();
 var timeelapsed = 0.0;
 var sceneObjects = new Array(500);
-var objLoader = new THREE.OBJLoader();
+//var loader = new THREE.GLTFLoader();
+
+
+
 var shaders = ShaderLoader.getShaders("shaders/simple.vert", "shaders/simple.frag");console.log("Shaders loaded...");
 
 /**
  * Initialises the scene
  * @return {void} n/a
  */
+var mesh;
+
+function handle_load(gltf){
+    mesh = gltf.scene.children[0];
+    scene.add(mesh);
+    mesh.position.z = -10;
+}
+
 function initScene()
 {
     addLighting();   
@@ -32,24 +43,16 @@ function initScene()
     //Add the canvas to the page
     document.body.appendChild(renderer.domElement);
     
-    
-    objLoader.load('Models/Bullet.obj', function(loadedObj){
-        loadedObj.transverse(function(child){
-            if(child instanceof THREE.Mesh)
-                child.material = material;
-        });
-        obj = loadedObj;
-        //scene.add(loadedObj);
-    });
-
     var material = new THREE.ShaderMaterial({
         uniforms: {},
         vertexShader: shaders.vertex,
         fragmentShader: shaders.fragment
     });
-
+    var loader = new THREE.GLTFLoader();
+    loader.load("Bullet.glb", handle_load);
+    console.log("GLTF");
     //Create a (1x1x1) cube geometry
-    for(var x = 0; x < sceneObjects.length; x++){
+    /*for(var x = 0; x < sceneObjects.length; x++){
         var geometry = new THREE.BoxGeometry(1,1,1);
 
         //Create a solid-colour material
@@ -57,14 +60,14 @@ function initScene()
         //Create a mesh from this geometry and material
 
         
-        cube = new THREE.Mesh(geometry, material);
-        sceneObjects[x] = cube;
+        //obj = new THREE.Mesh(geometry, material);
+        sceneObjects[x] = obj;
         sceneObjects[x].position.x= (Math.random()*20)-10;
         sceneObjects[x].position.y= (Math.random()*20)-10;
         sceneObjects[x].position.z= (Math.random()*20)-10;
         //Add the cube to the scene
         scene.add( sceneObjects[x] );
-    }
+    }*/
 
     //set cube 2 position
     //cube2.position.x = 1;
@@ -104,7 +107,7 @@ function update()
     controls.update();
     //Actually draw stuff to the screen
     renderer.render(scene, camera);
-    rotateCube();
+    //rotateCube();
     //moveCamera();
     //Call update continously
     requestAnimationFrame(update);
