@@ -6,7 +6,7 @@ void main(){
 
 	float lambert = dot(normalize(fNormal), normalize(light));
 
-	vec3 ambient = vec3(1,0,0) * 0.9;
+	vec3 ambient = vec3(0,0,1) * 0.5;
 
 	gl_FragColor = vec4(ambient + lambert, 1.0);
 }
