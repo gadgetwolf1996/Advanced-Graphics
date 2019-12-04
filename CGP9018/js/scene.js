@@ -6,7 +6,8 @@ var scene = new THREE.Scene();
 
 //Create a perspective camera
 var camera = new THREE.PerspectiveCamera(45, window.innerWidth/ window.innerHeight, 0.1, 1000);
-
+//time
+var clock = new THREE.Clock;
 //Create a renderer (with antialiasing)
 var renderer = new THREE.WebGLRenderer({ antialias: true });
 
@@ -84,7 +85,9 @@ function rotateCube(){
 }
 
 function moveCamera(){
-    
-    var d = new Date();
-    camera.position.x += Math.sin(d.getTime()+1/1000)/20;
+    var movement = (SPEED/0.005) * clock.getDelta();
+    camera.position.x += Math.sin(movement);
+    camera.position.x = Math.min(Math.max(-10.0, camera.position.x), 10.0)
+    pos = camera.position.x;
+    console.log(pos);
 }
