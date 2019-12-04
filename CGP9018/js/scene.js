@@ -120,7 +120,7 @@ function rotateCube(){
 }
 
 function randWholeNum(max){
-    return Math.random()*max;
+    return Math.floor(Math.random()*max);
 }
 function moveCamera(){
     
