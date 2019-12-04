@@ -10,10 +10,11 @@ var camera = new THREE.PerspectiveCamera(45, window.innerWidth/ window.innerHeig
 var clock = new THREE.Clock;
 //Create a renderer (with antialiasing)
 var renderer = new THREE.WebGLRenderer({ antialias: true });
-
+var controls;
 var SPEED = 0.01;
 var cube;
-
+var lasttime = clock.getDelta();
+var timeelapsed = 0.0;
 /**
  * Initialises the scene
  * @return {void} n/a
@@ -24,6 +25,9 @@ function initScene()
     renderer.setSize(window.innerWidth, window.innerHeight);
     //Add the canvas to the page
     document.body.appendChild(renderer.domElement);
+    
+    
+
     //Create a (1x1x1) cube geometry
     var geometry = new THREE.BoxGeometry(1,1,1);
     //Create a solid-colour material
@@ -47,7 +51,9 @@ function initScene()
 
     //Position the camera behind the cube and call update initially
     camera.position.z = 5;
-    
+    camera.lookAt (new THREE.Vector3(0,0,0));
+
+    controls = new THREE.OrbitControls(camera, renderer.domElement);
     //initialise lighting
     addLighting();
 
@@ -70,10 +76,11 @@ function addLighting()
  */
 function update()
 {
+    controls.update();
     //Actually draw stuff to the screen
     renderer.render(scene, camera);
     rotateCube();
-    moveCamera();
+    //moveCamera();
     //Call update continously
     requestAnimationFrame(update);
 }
@@ -85,9 +92,6 @@ function rotateCube(){
 }
 
 function moveCamera(){
-    var movement = (SPEED/0.005) * clock.getDelta();
-    camera.position.x += Math.sin(movement);
-    camera.position.x = Math.min(Math.max(-10.0, camera.position.x), 10.0)
-    pos = camera.position.x;
+    
     console.log(pos);
 }
