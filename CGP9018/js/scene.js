@@ -28,11 +28,6 @@ var shaders = ShaderLoader.getShaders("shaders/simple.vert", "shaders/simple.fra
  */
 var mesh;
 
-function handle_load(gltf){
-    mesh = gltf.scene.children[0];
-    scene.add(mesh);
-    mesh.position.z = -10;
-}
 
 function initScene()
 {
@@ -48,26 +43,30 @@ function initScene()
         vertexShader: shaders.vertex,
         fragmentShader: shaders.fragment
     });
-    var loader = new THREE.GLTFLoader();
-    loader.load("Bullet.glb", handle_load);
-    console.log("GLTF");
+    var gltfLoader= new THREE.GLTFLoader();
+    
+    
     //Create a (1x1x1) cube geometry
-    /*for(var x = 0; x < sceneObjects.length; x++){
+    for(var x = 0; x < sceneObjects.length; x++){
         var geometry = new THREE.BoxGeometry(1,1,1);
 
         //Create a solid-colour material
         //new THREE.MeshLambertMaterial({ color: 0x00ff00 });
         //Create a mesh from this geometry and material
-
-        
-        //obj = new THREE.Mesh(geometry, material);
-        sceneObjects[x] = obj;
-        sceneObjects[x].position.x= (Math.random()*20)-10;
-        sceneObjects[x].position.y= (Math.random()*20)-10;
-        sceneObjects[x].position.z= (Math.random()*20)-10;
-        //Add the cube to the scene
-        scene.add( sceneObjects[x] );
-    }*/
+        gltfLoader.load("Models/Bullet.glb", function(gltf)
+        {
+            gltf.scene.traverse( function ( child ) 
+            {
+                if ( child.isMesh) 
+                {
+                    console.log(child.material);
+                }
+            })
+            sceneObjects[x] = gltf.scene;        
+            sceneObjects[x].position.set((Math.random()*20)-10, (Math.random()*20)-10, (Math.random()*20)-10);
+            scene.add( sceneObjects[x] );
+        });
+    }
 
     //set cube 2 position
     //cube2.position.x = 1;
