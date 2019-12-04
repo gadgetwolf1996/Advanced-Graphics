@@ -15,7 +15,7 @@ var SPEED = 0.01;
 var cube;
 var lasttime = clock.getDelta();
 var timeelapsed = 0.0;
-
+var sceneObjects = new Array(500);
 
 /**
  * Initialises the scene
@@ -33,32 +33,34 @@ function initScene()
     
 
     //Create a (1x1x1) cube geometry
-    var geometry = new THREE.BoxGeometry(1,1,1);
+    for(var x = 0; x < sceneObjects.length; x++){
+        var geometry = new THREE.BoxGeometry(1,1,1);
 
-    var shaders = ShaderLoader.getShaders("shaders/simple.vert", "shaders/simple.frag");console.log("Shaders loaded...");
+        var shaders = ShaderLoader.getShaders("shaders/simple.vert", "shaders/simple.frag");console.log("Shaders loaded...");
 
-    //Create a solid-colour material
-    var material = new THREE.ShaderMaterial({
-        uniforms: {},
-        vertexShader: shaders.vertex,
-        fragmentShader: shaders.fragment
-    });//new THREE.MeshLambertMaterial({ color: 0x00ff00 });
-    //Create a mesh from this geometry and material
-    cube = new THREE.Mesh(geometry, material);
-
-    var cube2 = new THREE.Mesh(geometry, material);
-
-
-    //Add the cube to the scene
-    scene.add( cube );
+        //Create a solid-colour material
+        var material = new THREE.ShaderMaterial({
+            uniforms: {},
+            vertexShader: shaders.vertex,
+            fragmentShader: shaders.fragment
+        });//new THREE.MeshLambertMaterial({ color: 0x00ff00 });
+        //Create a mesh from this geometry and material
+        cube = new THREE.Mesh(geometry, material);
+        sceneObjects[x] = cube;
+        sceneObjects[x].position.x= (Math.random()*20)-10;
+        sceneObjects[x].position.y= (Math.random()*20)-10;
+        sceneObjects[x].position.z= (Math.random()*20)-10;
+        //Add the cube to the scene
+        scene.add( sceneObjects[x] );
+    }
 
     //set cube 2 position
-    cube2.position.x = 1;
+    //cube2.position.x = 1;
 
-    scene.add( cube2 );
+    //scene.add( cube2 );
 
     //update cube rotations
-    cube2.rotation.y += 1;
+    //cube2.rotation.y += 1;
 
     //Position the camera behind the cube and call update initially
     camera.position.z = 5;
@@ -97,11 +99,29 @@ function update()
 }
 
 function rotateCube(){
-    cube.rotation.x -= SPEED * 2;
-    cube.rotation.y -= SPEED;
-    cube.rotation.z -= SPEED * 3;
+    var no = 0;
+    for(var x = 0; x < sceneObjects.length; x++)
+    {
+        ran = (Math.random()* SPEED)*3;
+        no = randWholeNum(3);
+        console.log(no);
+        switch(no){
+            case 0:
+                sceneObjects[x].rotation.x -= ran;
+                break;
+            case 1:
+                sceneObjects[x].rotation.y -= ran;
+                break;
+            case 2:
+                sceneObjects[x].rotation.z -= ran;
+                break;
+        }
+    }
 }
 
+function randWholeNum(max){
+    return Math.random()*max;
+}
 function moveCamera(){
     
     console.log(pos);
