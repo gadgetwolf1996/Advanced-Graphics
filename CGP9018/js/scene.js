@@ -20,6 +20,7 @@ var sceneObjects = new Array(objno);//array of objects in scene
 var coldis = 0.25;//distance of hitboxes on objects
 var currentno = 0;//current number of objects
 //var loader = new THREE.GLTFLoader();
+var objectspawned = false;
 
 
 var gltfLoader;
@@ -90,6 +91,8 @@ function addBullets(index){
             scene.add( sceneObjects[index] );
         });
     }
+    currentno+=1;
+    
 }
 
 function addLighting()
@@ -110,15 +113,16 @@ function update()
 {
     controls.update();
     //Actually draw stuff to the screen
-    renderer.render(scene, camera);
+    
+    
     //sceneObjects.forEach(rotateCube);
     sceneObjects.forEach(checkNearby);
     sceneObjects.forEach(move);
     if(currentno < objno) {
-        currentno+=1;
         addBullets(currentno);
     }
-    //moveCamera();
+    
+    renderer.render(scene, camera);
     //Call update continously
     requestAnimationFrame(update);
 }
@@ -193,6 +197,6 @@ function randWholeNum(max){
     return Math.floor(Math.random()*max);
 }
 function moveCamera(){
-    
-    console.log(pos);
+    camera.position = sceneObjects[0].position;
+    //console.log();
 }
