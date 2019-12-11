@@ -11,15 +11,18 @@ var clock = new THREE.Clock;
 //Create a renderer (with antialiasing)
 var renderer = new THREE.WebGLRenderer({ antialias: true });
 var controls;
-var SPEED = 0.01;
+var SPEED = 0.1;
 var obj;
 var lasttime = clock.getDelta();
 var timeelapsed = 0.0;
-var sceneObjects = new Array(500);
+var objno = 500;//total number of objects to be spawned
+var sceneObjects = new Array(objno);//array of objects in scene
+var coldis = 0.25;//distance of hitboxes on objects
+var currentno = 0;//current number of objects
 //var loader = new THREE.GLTFLoader();
 
 
-
+var gltfLoader;
 var shaders = ShaderLoader.getShaders("shaders/simple.vert", "shaders/simple.frag");console.log("Shaders loaded...");
 
 /**
@@ -43,30 +46,12 @@ function initScene()
         vertexShader: shaders.vertex,
         fragmentShader: shaders.fragment
     });
-    var gltfLoader= new THREE.GLTFLoader();
+    gltfLoader= new THREE.GLTFLoader();
     
     
     //Create a (1x1x1) cube geometry
-    for(var x = 0; x < sceneObjects.length; x++){
-        var geometry = new THREE.BoxGeometry(1,1,1);
-
-        //Create a solid-colour material
-        //new THREE.MeshLambertMaterial({ color: 0x00ff00 });
-        //Create a mesh from this geometry and material
-        gltfLoader.load("Models/Bullet.glb", function(gltf)
-        {
-            gltf.scene.traverse( function ( child ) 
-            {
-                if ( child.isMesh) 
-                {
-                    console.log(child.material);
-                }
-            })
-            sceneObjects[x] = gltf.scene;        
-            sceneObjects[x].position.set((Math.random()*20)-10, (Math.random()*20)-10, (Math.random()*20)-10);
-            scene.add( sceneObjects[x] );
-        });
-    }
+    currentno+=1;
+    addBullets(currentno);
 
     //set cube 2 position
     //cube2.position.x = 1;
@@ -85,6 +70,27 @@ function initScene()
  
 
     update();
+}
+
+function addBullets(index){
+    if(currentno < objno){
+        gltfLoader.load("Models/Bullet.glb", function(gltf)
+        {
+            gltf.scene.traverse( function ( child ) 
+            {
+                if ( child.isMesh) 
+                {
+                    console.log(child.material);
+                }
+            })
+            var ob = gltf.scene;
+            ob.position.set((Math.random()*20)-10, (Math.random()*20)-10, (Math.random()*20)-10);
+            
+            ob.rotation.set((Math.random()*360), (Math.random()*360), (Math.random()*360));
+            sceneObjects[index] = ob;
+            scene.add( sceneObjects[index] );
+        });
+    }
 }
 
 function addLighting()
@@ -106,31 +112,82 @@ function update()
     controls.update();
     //Actually draw stuff to the screen
     renderer.render(scene, camera);
-    //rotateCube();
+    //sceneObjects.forEach(rotateCube);
+    sceneObjects.forEach(checkNearby);
+    sceneObjects.forEach(move);
+    if(currentno < objno) {
+        currentno+=1;
+        addBullets(currentno);
+    }
     //moveCamera();
     //Call update continously
     requestAnimationFrame(update);
 }
 
-function rotateCube(){
-    var no = 0;
-    for(var x = 0; x < sceneObjects.length; x++)
-    {
-        ran = (SPEED)*3;
-        no = randWholeNum(3);
-        console.log(no);
-        switch(no){
-            case 0:
-                sceneObjects[x].rotation.x -= ran;
-                break;
-            case 1:
-                sceneObjects[x].rotation.y -= ran;
-                break;
-            case 2:
-                sceneObjects[x].rotation.z -= ran;
-                break;
+function move(item, index){
+    sceneObjects[index].translateZ(-SPEED);
+    //sceneObjects[index].position.set(sceneObjects[index].position.x + SPEED, sceneObjects[index].position.y, sceneObjects[index].position.z); 
+}
+
+function checkNearby(item, index){
+    if(currentno == 0){
+        for (i = 0; i < currentno; i++){
+            if(i == index){
+                continue;
+            }
+    
+            x = false;
+            y = false;
+            z = false;
+    
+            if(sceneObjects[i].position.x >= item.position.x - coldis && sceneObjects[i].position.x <= item.position.x + coldis){
+                x = true;
+            }
+    
+            if(sceneObjects[i].position.y >= item.position.y - coldis && sceneObjects[i].position.y <= item.position.y + coldis){
+                y = true;
+            }
+    
+            if(sceneObjects[i].position.z >= item.position.z - coldis && sceneObjects[i].position.z <= item.position.z + coldis){
+                z = true;
+            }
+    
+            if(x&&y&&z){
+                sceneObjects[index].rotation.set(item.rotation.x, item.rotation.y+180, item.rotation.z);
+                sceneObjects[i].rotation.set(sceneObjects[i].rotation.x, sceneObjects[i].rotation.y+180, sceneObjects[i].rotation.z);
+                sceneObjects[index].translateZ(-coldis);
+                sceneObjects[i].translateZ(-coldis);
+                
+            }
         }
     }
+
+    if((sceneObjects[index].position.x >= 10 || sceneObjects[index].position.x <= -10)||
+    (sceneObjects[index].position.y >= 10 || sceneObjects[index].position.y <= -10)||
+    (sceneObjects[index].position.z >= 10 || sceneObjects[index].position.z <= -10)){
+        
+        sceneObjects[index].rotation.set(item.rotation.x, item.rotation.y+180, item.rotation.z);
+        sceneObjects[index].translateZ(-SPEED);
+    }
+}
+
+function rotateCube(item, index){
+    var no = 0;
+    ran = (SPEED)*3;
+    no = randWholeNum(3);
+    console.log(no);
+    switch(no){
+        case 0:
+            sceneObjects[index].rotation.set(item.rotation.x - ran, item.rotation.y, item.rotation.z);
+            break;
+        case 1:
+            sceneObjects[index].rotation.set(item.rotation.x, item.rotation.y - ran, item.rotation.z);
+            break;
+        case 2:
+            sceneObjects[index].rotation.set(item.rotation.x, item.rotation.y, item.rotation.z - ran);
+            break;
+    }
+    
 }
 
 function randWholeNum(max){
