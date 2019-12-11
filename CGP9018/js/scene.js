@@ -50,7 +50,6 @@ function initScene()
     
     
     //Create a (1x1x1) cube geometry
-    currentno+=1;
     addBullets(currentno);
 
     //set cube 2 position
