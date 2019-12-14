@@ -15,7 +15,7 @@ var SPEED = 0.1;
 var obj;
 var lasttime = clock.getDelta();
 var timeelapsed = 0.0;
-var objno = 500;//total number of objects to be spawned
+var objno = 250;//total number of objects to be spawned
 var sceneObjects = new Array(objno);//array of objects in scene
 var coldis = 0.25;//distance of hitboxes on objects
 var currentno = 0;//current number of objects
@@ -25,7 +25,7 @@ var objectspawned = false;
 
 var gltfLoader;
 var shaders = ShaderLoader.getShaders("shaders/simple.vert", "shaders/simple.frag");console.log("Shaders loaded...");
-
+var mat;
 /**
  * Initialises the scene
  * @return {void} n/a
@@ -42,7 +42,7 @@ function initScene()
     //Add the canvas to the page
     document.body.appendChild(renderer.domElement);
     
-    var material = new THREE.ShaderMaterial({
+    mat = new THREE.ShaderMaterial({
         uniforms: {},
         vertexShader: shaders.vertex,
         fragmentShader: shaders.fragment
@@ -74,22 +74,48 @@ function initScene()
 
 function addBullets(index){
     if(currentno < objno){
-        gltfLoader.load("Models/Bullet.glb", function(gltf)
-        {
-            gltf.scene.traverse( function ( child ) 
-            {
-                if ( child.isMesh) 
+        no = randWholeNum(2);
+        switch(no){
+            case 0:
+                gltfLoader.load("Models/Fly.glb", function(gltf)
                 {
-                    console.log(child.material);
-                }
-            })
-            var ob = gltf.scene;
-            ob.position.set((Math.random()*20)-10, (Math.random()*20)-10, (Math.random()*20)-10);
-            
-            ob.rotation.set((Math.random()*360), (Math.random()*360), (Math.random()*360));
-            sceneObjects[index] = ob;
-            scene.add( sceneObjects[index] );
-        });
+                    gltf.scene.traverse( function ( child ) 
+                    {
+                        if ( child.isMesh) 
+                        {
+                            console.log(child.material);
+                        }
+                    })
+                    var ob = gltf.scene;
+                    ob.position.set((Math.random()*20)-10, (Math.random()*20)-10, (Math.random()*20)-10);
+                    
+                    ob.rotation.set((Math.random()*360), (Math.random()*360), (Math.random()*360));
+                    sceneObjects[index] = ob;
+                    scene.add( sceneObjects[index] );
+                });
+                break;
+            case 1:
+                gltfLoader.load("Models/Bullet.glb", function(gltf)
+                {
+                    gltf.scene.traverse( function ( child ) 
+                    {
+                        if ( child.isMesh) 
+                        {
+                            child.material = mat;
+                            console.log(child.material);
+                        }
+                    })
+                
+                    var ob = gltf.scene;
+                    ob.position.set((Math.random()*20)-10, (Math.random()*20)-10, (Math.random()*20)-10);
+                    
+                    ob.rotation.set((Math.random()*360), (Math.random()*360), (Math.random()*360));
+                    sceneObjects[index] = ob;
+                    scene.add( sceneObjects[index] );
+                });
+                break;
+
+        }
     }
     currentno+=1;
     
