@@ -15,7 +15,7 @@ var SPEED = 0.1;
 var obj;
 var lasttime = clock.getDelta();
 var timeelapsed = 0.0;
-var objno = 250;//total number of objects to be spawned
+var objno = 500;//total number of objects to be spawned
 var sceneObjects = new Array(objno);//array of objects in scene
 var coldis = 0.25;//distance of hitboxes on objects
 var currentno = 0;//current number of objects
@@ -74,7 +74,7 @@ function initScene()
 
 function addBullets(index){
     if(currentno < objno){
-        no = randWholeNum(2);
+        no = randWholeNum(3);
         switch(no){
             case 0:
                 gltfLoader.load("Models/Fly.glb", function(gltf)
@@ -106,6 +106,24 @@ function addBullets(index){
                         }
                     })
                 
+                    var ob = gltf.scene;
+                    ob.position.set((Math.random()*20)-10, (Math.random()*20)-10, (Math.random()*20)-10);
+                    
+                    ob.rotation.set((Math.random()*360), (Math.random()*360), (Math.random()*360));
+                    sceneObjects[index] = ob;
+                    scene.add( sceneObjects[index] );
+                });
+                break;
+            case 2:
+                gltfLoader.load("Models/DeadFly.glb", function(gltf)
+                {
+                    gltf.scene.traverse( function ( child ) 
+                    {
+                        if ( child.isMesh) 
+                        {
+                            console.log(child.material);
+                        }
+                    })
                     var ob = gltf.scene;
                     ob.position.set((Math.random()*20)-10, (Math.random()*20)-10, (Math.random()*20)-10);
                     
